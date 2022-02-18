@@ -1,0 +1,50 @@
+.gameSetting {
+  margin: 0px 6px 0 4px;
+  padding: 8px 16px;
+  font-family: CupheadVogue-Bold;
+  border: 1px solid #000;
+  cursor: pointer;
+  background: #fff;
+  background-image: url('/textures/card_ready_and_waiting_bg_3.png');
+  background-position-y: 100px;
+  background-position-x: -15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gameSetting select {
+  background: none;
+  border: none;
+  font-family: CupheadMemphis;
+  font-size: 1.25rem;
+  outline: none;
+}
+
+.settingOptions {
+  margin: 0;
+  padding: 0;
+}
+
+.settingOption {
+  margin: 0 2px;
+  padding: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  font-family: CupheadMemphis;
+  font-size: 1.25rem;
+  display: inline;
+}
+
+.settingOption[data-selected="true"] {
+  border: 3px solid rgba(159, 32, 0, 0.5);
+}
+
+.settingOption button {
+  background: none;
+  border: none;
+  font-family: CupheadMemphis;
+  font-size: 1.25rem;
+  outline: none;
+}

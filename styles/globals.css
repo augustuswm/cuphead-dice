@@ -1,9 +1,13 @@
 html,
 body {
+  min-height: 100vh;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background: #222;
+  background: linear-gradient(180deg, rgba(242,196,15,1) 0%, rgba(34,34,34,1) 520px);
+  overscroll-behavior-y: none;
 }
 
 a {
@@ -13,4 +17,25 @@ a {
 
 * {
   box-sizing: border-box;
+  user-select: none;
+}
+
+@font-face {
+  font-family: CupheadFelix;
+  src: url('/fonts/CupheadFelix-Regular.otf');
+}
+
+@font-face {
+  font-family: CupheadMemphis;
+  src: url('/fonts/CupheadMemphis-Medium.otf');
+}
+
+@font-face {
+  font-family: CupheadVogue-Bold;
+  src: url('/fonts/CupheadVogue-Bold.otf');
+}
+
+@font-face {
+  font-family: CupheadVogue-ExtraBold;
+  src: url('/fonts/CupheadVogue-ExtraBold.otf');
 }

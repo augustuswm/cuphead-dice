@@ -1,0 +1,39 @@
+.timer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  /* background-color: rgba(255, 0, 0, 0.25); */
+}
+
+.timeRemaining {
+  padding: 0;
+  /* font-size: 18rem; */
+  font-size: clamp(14rem, 65vw, 28rem);
+  line-height: 0.8;
+  text-align: center;
+  font-family: CupheadMemphis;
+  user-select: none;
+}
+
+.lowTime {
+  color: rgba(159, 32, 0);
+}
+
+.timerButton {
+  margin: 0 auto;
+  display: block;
+  background: none;
+  border: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  /* font-size: 3rem; */
+  font-size: clamp(2rem, 12vw, 5rem);
+  font-family: CupheadVogue-Extrabold;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(159, 32, 0, 0.25);
+}
+
+.timerButton:active {
+  color: rgba(159, 32, 0);
+}

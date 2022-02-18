@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "id": "/",
+  "name": "Cuphead: Fast Rolling Dice Game",
+  "short_name": "Cuphead",
+  "start_url": "/?source=PWA",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#222",
+  "description": "Companion web app for Cuphead: Fast Rolling Dice Game",
+  "icons": [
+    {
+      "src": "mask_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
