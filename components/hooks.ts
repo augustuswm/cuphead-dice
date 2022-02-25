@@ -23,8 +23,6 @@ export type Audio = {
   duration: number
 }
 
-HTMLAudioElement
-
 const MOCK_AUDIO = {
   play: () => { },
   pause: () => { },
