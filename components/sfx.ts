@@ -1,3 +1,4 @@
+import { useCallback, useMemo, useRef } from "react";
 import { INTROS } from "../data/intros";
 import { useAudio, useAudioClip } from "./hooks";
 
@@ -44,13 +45,15 @@ function getIntroToPlay(): string {
 
 export function useIntroClip() {
   let audio = useAudio();
+  let originalPlay = useMemo(() => audio.play.bind(audio), [audio]);
 
-  return {
-    ...audio,
-    play: () => {
-      audio.src = getIntroToPlay();
-      audio.currentTime = 0;
-      audio.play()
-    }
-  };
+  let playNextIntro = useCallback(() => {
+    audio.src = getIntroToPlay();
+    audio.currentTime = 0;
+    originalPlay();
+  }, [audio]);
+
+  audio.play = playNextIntro;
+
+  return audio;
 }
