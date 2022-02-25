@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { ActiveBoss } from '../../components/Boss';
 import DifficultySelect from '../../components/DifficultySelect';
 import { useHistory } from '../../components/RouteHistory';
@@ -19,6 +20,7 @@ export default function BossPage({ boss }: BossPageProps) {
   let router = useRouter();
 
   let [difficulty, setDifficulty] = useSetting('difficulty');
+  let [roundInProgress, setRoundInProgress] = useState(false);
 
   let animation = history.last() === '/score' ? animations.fadeIn : animations.fadeFront;
 
@@ -29,12 +31,18 @@ export default function BossPage({ boss }: BossPageProps) {
     exit="exit"
     variants={animation.variants}>
     <div className={shared.frame}>
-      <ActiveBoss difficulty={difficulty} boss={boss} onComplete={() => {
-        router.push('/score');
-      }} />
+      <ActiveBoss
+        difficulty={difficulty}
+        boss={boss}
+        onRoundIntro={() => setRoundInProgress(true)}
+        onRoundComplete={() => setRoundInProgress(false)}
+        onComplete={() => {
+          router.push('/score');
+        }}
+      />
 
       <div className={`${shared.paperButton} ${shared.paperHeading}`}><b>SETTINGS</b></div>
-      <DifficultySelect />
+      <DifficultySelect disabled={roundInProgress} />
     </div>
   </motion.div>;
 }

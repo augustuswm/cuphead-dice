@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { useRaf } from "react-use";
 import { DifficultyLevel } from "../data/difficulty";
 import { INTROS } from "../data/intros";
-import { useAudio, useAudioClip, useDifficultyTime } from "./hooks";
+import { Audio, useAudio, useAudioClip, useDifficultyTime } from "./hooks";
 import s from '../styles/Round.module.css';
 
 let introPos = 0;
@@ -63,7 +63,7 @@ function getAudioPlaybackRampOut(ramp: number) {
 }
 
 function applyMusicMods(
-  music: HTMLAudioElement,
+  music: Audio,
   state: RoundTimerState,
   delta: number,
   elapsed: number,
@@ -113,7 +113,14 @@ function computeRemaining(state: RoundTimerState, delta: number, durationMs: num
   return remaining;
 }
 
-function useRoundTimer(durationMs: number, music: HTMLAudioElement) {
+export type RoundTimerEvents = {
+  onRoundIntro?: () => void
+  onRoundStart?: () => void
+  onRoundEnd?: () => void
+  onRoundComplete?: () => void
+}
+
+function useRoundTimer(durationMs: number, music: Audio, events: RoundTimerEvents) {
   let _ = useRaf(1e11, 0);
 
   let [state, setRoundState] = useState<RoundTimerState>(RoundTimerState.Ready);
@@ -151,7 +158,11 @@ function useRoundTimer(durationMs: number, music: HTMLAudioElement) {
     setRoundTimer(undefined);
     setWarningTimer(undefined);
     setRoundState(RoundTimerState.Ready);
-  }, [music, roundTimer, warningTimer, intro, bell, warning, buzzer]);
+
+    if (events.onRoundComplete) {
+      events.onRoundComplete();
+    }
+  }, [music, roundTimer, warningTimer, intro, bell, warning, buzzer, events.onRoundComplete]);
 
   let endRound = useCallback(() => {
     setRoundTimer(undefined);
@@ -161,7 +172,11 @@ function useRoundTimer(durationMs: number, music: HTMLAudioElement) {
 
     buzzer.onended = clearRound;
     buzzer.play();
-  }, [clearRound, buzzer]);
+
+    if (events.onRoundEnd) {
+      events.onRoundEnd();
+    }
+  }, [clearRound, buzzer, events.onRoundEnd]);
 
   let startRound = useCallback(() => {
     setRoundState(RoundTimerState.Intro);
@@ -178,6 +193,10 @@ function useRoundTimer(durationMs: number, music: HTMLAudioElement) {
       setRoundTimer(timerId);
       setWarningTimer(warningTimerId);
       setStartTime(Date.now());
+
+      if (events.onRoundStart) {
+        events.onRoundStart();
+      }
     }
     intro.onended = introCompleteCallback.current;
     intro.play();
@@ -188,7 +207,11 @@ function useRoundTimer(durationMs: number, music: HTMLAudioElement) {
 
     music.volume = 0.5;
     music.play();
-  }, [music, durationMs, endRound, intro, warning, bell]);
+
+    if (events.onRoundIntro) {
+      events.onRoundIntro();
+    }
+  }, [music, durationMs, endRound, intro, warning, bell, events.onRoundStart, events.onRoundIntro]);
 
   let delta = Date.now() - startTime;
   let elapsed = computeElapsed(state, delta, durationMs);
@@ -206,13 +229,13 @@ function useRoundTimer(durationMs: number, music: HTMLAudioElement) {
 }
 
 type RoundProps = {
-  difficulty: DifficultyLevel,
-  music: HTMLAudioElement
-}
+  difficulty: DifficultyLevel
+  music: Audio
+} & RoundTimerEvents
 
-export function Round({ difficulty, music }: RoundProps) {
+export function Round({ difficulty, music, onRoundIntro, onRoundStart, onRoundEnd, onRoundComplete }: RoundProps) {
   let duration = useDifficultyTime(difficulty);
-  let { state, startRound, clearRound, elapsed, remaining } = useRoundTimer(duration * 1000, music);
+  let { state, startRound, clearRound, elapsed, remaining } = useRoundTimer(duration * 1000, music, { onRoundIntro, onRoundStart, onRoundEnd, onRoundComplete });
   // let elapsedSeconds = Math.floor(elapsed / 1000);
   let remainingSeconds = Math.ceil(remaining / 1000);
 

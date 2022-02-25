@@ -4,7 +4,7 @@ import { useLongPress } from "use-long-press";
 import { Boss } from "../data/bosses";
 import { DifficultyLevel } from "../data/difficulty";
 import { useAudioClip } from "./hooks";
-import { Round } from "./Round";
+import { Round, RoundTimerEvents } from "./Round";
 import { motion } from "framer-motion";
 import s from '../styles/Boss.module.css';
 
@@ -51,10 +51,7 @@ function BossKOHighlight({ holdMs, onComplete, maskUrl }: KOHighlightProps) {
   let maskStyle = { maskImage: mask, WebkitMaskImage: mask };
 
   return <>
-    <div className={s.koHighlightMask}
-      // @ts-ignore
-      style={maskStyle}
-    >
+    <div className={s.koHighlightMask} style={maskStyle}>
       <div className={s.koHighlight} style={{ transform: `translateY(${translate}%)` }} />
     </div>
     <div className={s.koHighlightText} style={{ opacity: opacityCalc(percentComplete) }}>KO</div>
@@ -72,11 +69,13 @@ function useBoomClip() {
 type ActiveBossProps = {
   boss: Boss
   difficulty: number
-  onComplete: () => void
-};
+  onComplete?: () => void
+} & RoundTimerEvents
 
-export function ActiveBoss({ difficulty, boss, onComplete }: ActiveBossProps) {
+export function ActiveBoss({ difficulty, boss, onRoundIntro, onRoundStart, onRoundEnd, onRoundComplete, onComplete }: ActiveBossProps) {
   let music = useAudioClip(`/music/${boss.track}.mp3`);
+
+  let [bossComplete, setBossComplete] = useState(false);
 
   let boomClip = useBoomClip();
   let knockoutClip = useKnockoutClip();
@@ -108,15 +107,21 @@ export function ActiveBoss({ difficulty, boss, onComplete }: ActiveBossProps) {
           <div className={s.bossThumbnail} {...longPressBinding} >
             <div className={s.bossBackdrop} />
             <img id="boss-thumbnail" src={getThumbnail(boss)} alt={formattedName} />
-            {holdingForKO && <BossKOHighlight holdMs={2500} maskUrl={getThumbnail(boss)} onComplete={() => {
-              knockoutClip.play();
-              onComplete();
-            }} />}
+            {
+              (holdingForKO || bossComplete) &&
+              <BossKOHighlight holdMs={2500} maskUrl={getThumbnail(boss)} onComplete={() => {
+                setBossComplete(true);
+                knockoutClip.play();
+                if (onComplete) {
+                  onComplete();
+                }
+              }} />
+            }
           </div>
         </motion.div>
         {
           difficulty &&
-          <Round difficulty={difficulty} music={music} />
+          <Round difficulty={difficulty} music={music} onRoundIntro={onRoundIntro} onRoundStart={onRoundStart} onRoundEnd={onRoundEnd} onRoundComplete={onRoundComplete} />
         }
       </div>
     </div>

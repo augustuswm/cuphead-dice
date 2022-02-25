@@ -12,9 +12,31 @@ export function useDifficultyTime(level: DifficultyLevel): number {
   }
 }
 
+export type Audio = {
+  play: () => void
+  pause: () => void
+  onended: ((this: GlobalEventHandlers, ev: Event) => any) | null
+  src?: string
+  currentTime: number
+  playbackRate: number
+  volume: number
+  duration: number
+}
+
+HTMLAudioElement
+
+const MOCK_AUDIO = {
+  play: () => { },
+  pause: () => { },
+  onended: null,
+  currentTime: 0,
+  playbackRate: 0,
+  volume: 0,
+  duration: 0
+}
+
 export function useAudio() {
-  // @ts-ignore
-  let inner = useRef<HTMLAudioElement>(typeof document !== 'undefined' ? document.createElement('audio') : {});
+  let inner = useRef<Audio>(typeof document !== 'undefined' ? document.createElement('audio') : MOCK_AUDIO);
   return inner.current;
 }
 
