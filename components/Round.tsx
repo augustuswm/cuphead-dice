@@ -4,35 +4,13 @@ import { DifficultyLevel } from "../data/difficulty";
 import { INTROS } from "../data/intros";
 import { Audio, useAudio, useAudioClip, useDifficultyTime } from "./hooks";
 import s from '../styles/Round.module.css';
-import { useBellClip, useBuzzerClip, useVinylClip } from "./sfx";
-
-let introPos = 0;
-
-function getIntroToPlay(): string {
-  let intro = INTROS[introPos];
-  introPos++;
-
-  if (!INTROS[introPos]) {
-    introPos = 0;
-  }
-
-  return `/sfx/${intro}.mp3`;
-}
+import { useBellClip, useBuzzerClip, useIntroClip, useVinylClip } from "./sfx";
 
 enum RoundTimerState {
   Ready,
   Intro,
   Running,
   Ending,
-}
-
-function useRoundTimerAudio() {
-  let intro = useAudio();
-  let bell = useBellClip();
-  let warning = useVinylClip();
-  let buzzer = useBuzzerClip();
-
-  return { intro, bell, warning, buzzer };
 }
 
 function getAudioVolumeRampIn(ramp: number) {
@@ -118,7 +96,10 @@ function useRoundTimer(durationMs: number, music: Audio, events: RoundTimerEvent
   let [roundTimer, setRoundTimer] = useState<NodeJS.Timeout | undefined>(undefined);
   let [warningTimer, setWarningTimer] = useState<NodeJS.Timeout | undefined>(undefined);
 
-  let { intro, bell, warning, buzzer } = useRoundTimerAudio();
+  let intro = useIntroClip();
+  let bell = useBellClip();
+  let warning = useVinylClip();
+  let buzzer = useBuzzerClip();
   let introCompleteCallback = useRef((_: any) => { });
 
   let clearRound = useCallback(() => {
@@ -170,8 +151,6 @@ function useRoundTimer(durationMs: number, music: Audio, events: RoundTimerEvent
   let startRound = useCallback(() => {
     setRoundState(RoundTimerState.Intro);
 
-    intro.src = getIntroToPlay();
-    intro.currentTime = 0;
     introCompleteCallback.current = function scheduleRound(_: any) {
       bell.play();
 

@@ -9,7 +9,7 @@ import s from '../styles/Home.module.css';
 import shared from '../styles/Shared.module.css';
 
 export default function Home() {
-  let selectBossAudio = useSelectBossClip();
+  let selectBossAudio = useSelectBossClip(true);
 
   return <motion.div
     initial="initial"

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMountedState, useRaf } from "react-use";
 import { useLongPress } from "use-long-press";
 import { Boss } from "../data/bosses";
@@ -8,6 +8,7 @@ import { Round, RoundTimerEvents } from "./Round";
 import { motion } from "framer-motion";
 import s from '../styles/Boss.module.css';
 import { useBoomClip, useKnockoutClip } from "./sfx";
+import { useRouter } from "next/router";
 
 export type BossProps = {
   difficulty: DifficultyLevel
@@ -70,8 +71,8 @@ export function ActiveBoss({ difficulty, boss, onRoundIntro, onRoundStart, onRou
 
   let [bossComplete, setBossComplete] = useState(false);
 
-  let boomClip = useBoomClip();
-  let knockoutClip = useKnockoutClip();
+  let boomClip = useBoomClip(true);
+  let knockoutClip = useKnockoutClip(true);
   let [holdingForKO, setHoldingForKO] = useState(false);
   let longPressBinding = useLongPress(() => { }, {
     onStart: () => {
