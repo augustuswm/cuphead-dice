@@ -7,6 +7,7 @@ import { useAudioClip } from "./hooks";
 import { Round, RoundTimerEvents } from "./Round";
 import { motion } from "framer-motion";
 import s from '../styles/Boss.module.css';
+import { useBoomClip, useKnockoutClip } from "./sfx";
 
 export type BossProps = {
   difficulty: DifficultyLevel
@@ -56,14 +57,6 @@ function BossKOHighlight({ holdMs, onComplete, maskUrl }: KOHighlightProps) {
     </div>
     <div className={s.koHighlightText} style={{ opacity: opacityCalc(percentComplete) }}>KO</div>
   </>;
-}
-
-function useKnockoutClip() {
-  return useAudioClip('/sfx/Knockout!.mp3');
-}
-
-function useBoomClip() {
-  return useAudioClip('/sfx/boom.mp3');
 }
 
 type ActiveBossProps = {

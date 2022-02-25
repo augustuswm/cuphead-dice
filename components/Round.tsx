@@ -4,6 +4,7 @@ import { DifficultyLevel } from "../data/difficulty";
 import { INTROS } from "../data/intros";
 import { Audio, useAudio, useAudioClip, useDifficultyTime } from "./hooks";
 import s from '../styles/Round.module.css';
+import { useBellClip, useBuzzerClip, useVinylClip } from "./sfx";
 
 let introPos = 0;
 
@@ -16,18 +17,6 @@ function getIntroToPlay(): string {
   }
 
   return `/sfx/${intro}.mp3`;
-}
-
-function useBellClip() {
-  return useAudioClip('/sfx/bell_3.mp3');
-}
-
-function useVinylClip() {
-  return useAudioClip('/sfx/vinyl2.mp3');
-}
-
-function useBuzzerClip() {
-  return useAudioClip('/sfx/buzzer.mp3');
 }
 
 enum RoundTimerState {
